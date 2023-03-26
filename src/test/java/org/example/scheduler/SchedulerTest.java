@@ -1,9 +1,6 @@
 package org.example.scheduler;
 
-import org.example.data.Order;
-import org.example.data.Picker;
-import org.example.data.Store;
-import org.example.data.Task;
+import org.example.data.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
@@ -31,11 +29,13 @@ class SchedulerTest {
     @Mock
     private Store store;
     @Mock
-    private List<Order> orderList;
+    private List<Order> orders;
 
     private Method isFeasible;
 
     private Method initializePickersQueue;
+
+    private Method initialize;
 
     @BeforeEach
     void setUp() throws NoSuchMethodException {
@@ -43,6 +43,8 @@ class SchedulerTest {
         isFeasible.setAccessible(true);
         initializePickersQueue = Scheduler.class.getDeclaredMethod("initializePickersQueue");
         initializePickersQueue.setAccessible(true);
+        initialize = Scheduler.class.getDeclaredMethod("initialize");
+        initialize.setAccessible(true);
     }
 
     @Test
@@ -89,5 +91,35 @@ class SchedulerTest {
         for (Picker picker : result) {
             assertEquals(LocalTime.of(10,0), picker.getAvailableAt());
         }
+    }
+
+    @Test
+    void initialize() throws InvocationTargetException, IllegalAccessException {
+        //given
+        scheduler.setTask(Task.FIRST);
+        when(orders.get(0)).thenReturn(Order.builder()
+                .orderId("order-1")
+                .completeBy(LocalTime.of(10, 0))
+                .pickingTime(Duration.ofMinutes(45))
+                .build());
+        when(orders.get(1)).thenReturn(Order.builder()
+                .orderId("order-2")
+                .completeBy(LocalTime.of(9, 30))
+                .pickingTime(Duration.ofMinutes(30))
+                .build());
+        when(orders.size()).thenReturn(2);
+
+
+        when(store.getPickers()).thenReturn(List.of("P1"));
+        when(store.getPickingStartTime()).thenReturn(LocalTime.of(9,0));
+        //when
+        OrderTrack[] initial = (OrderTrack[]) initialize.invoke(scheduler);
+        //then
+        assertEquals(2, initial.length);
+        for(int i = 0; i< initial.length; i++){
+            assertEquals(BigDecimal.ONE,initial[i].getAnswer());
+            assertEquals(store.getPickingStartTime().plus(orders.get(i).getPickingTime()),initial[i].getPickers().peek().getAvailableAt());
+        }
+
     }
 }
