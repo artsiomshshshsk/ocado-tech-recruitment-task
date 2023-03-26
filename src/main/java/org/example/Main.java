@@ -12,8 +12,10 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
+        if(args.length < 2) {
+            throw new IllegalArgumentException("Please provide the path to the store and order files");
+        }
         FileService fileService = new FileService();
-
         Task task = args.length > 2 &&
                 args[2] != null &&
                 args[2].equals("SECOND") ?
