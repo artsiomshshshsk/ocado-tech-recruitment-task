@@ -2,7 +2,6 @@ package org.example.scheduler;
 
 import org.example.util.Util;
 import org.example.data.*;
-
 import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.*;
@@ -89,9 +88,14 @@ public class Scheduler {
 
     private List<Order> computeResults(OrderTrack[] dp) {
         Optional<OrderTrack> maxPair = Arrays.stream(dp).max(Comparator.comparing(OrderTrack::getAnswer));
-        return maxPair.map(pair -> {
+
+        if(maxPair.map(orderTrack -> orderTrack.getAnswer().equals(BigDecimal.ZERO)).orElse(true)){
+            return Collections.emptyList();
+        }
+
+        return maxPair.map(track -> {
             List<Order> result = new LinkedList<>();
-            OrderTrack cur = pair;
+            OrderTrack cur = track;
             while (cur != null) {
                 result.add(0, cur.getOrder());
                 cur = cur.getPrev();
