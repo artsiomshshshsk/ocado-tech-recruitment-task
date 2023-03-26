@@ -30,8 +30,7 @@ public class Scheduler {
         if (task == Task.FIRST) {
             orders.sort(Comparator.comparing(Order::completeTimeMinusPickingTime));
         } else {
-            orders.sort(Comparator.comparing(Order::completeTimeMinusPickingTime)
-                    .thenComparing(Order::getOrderValue));
+            orders.sort(Comparator.comparing(Order::completeTimeMinusPickingTime).thenComparing(Order::getOrderValue));
         }
         OrderTrack[] dp = initialize();
 
@@ -82,8 +81,7 @@ public class Scheduler {
     }
 
     private boolean isFeasible(LocalTime timeAfterCompleting, Order order) {
-        return (timeAfterCompleting.isBefore(store.getPickingEndTime()) || timeAfterCompleting.equals(store.getPickingEndTime())) &&
-                (timeAfterCompleting.isBefore(order.getCompleteBy()) || timeAfterCompleting.equals(order.getCompleteBy()));
+        return !timeAfterCompleting.isAfter(store.getPickingEndTime()) && !timeAfterCompleting.isAfter(order.getCompleteBy());
     }
 
 
