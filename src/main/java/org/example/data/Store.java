@@ -13,8 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Store {
-    List<String> pickers;
-    LocalTime pickingStartTime;
-    LocalTime pickingEndTime;
+    private List<String> pickers;
+    private LocalTime pickingStartTime;
+    private LocalTime pickingEndTime;
 }
 

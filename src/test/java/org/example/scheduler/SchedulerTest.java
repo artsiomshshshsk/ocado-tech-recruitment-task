@@ -89,9 +89,5 @@ class SchedulerTest {
         for (Picker picker : result) {
             assertEquals(LocalTime.of(10,0), picker.getAvailableAt());
         }
-
     }
-
-
-
 }

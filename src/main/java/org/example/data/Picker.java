@@ -10,9 +10,10 @@ import java.time.LocalTime;
 @Getter
 @Setter
 @AllArgsConstructor
+@ToString
 public class Picker {
-    String pickerId;
-    LocalTime availableAt;
+    private String pickerId;
+    private LocalTime availableAt;
 
     public Picker(Picker picker) {
         if (picker == null) {
