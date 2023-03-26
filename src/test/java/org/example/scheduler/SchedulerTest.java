@@ -94,7 +94,7 @@ class SchedulerTest {
     }
 
     @Test
-    void initialize() throws InvocationTargetException, IllegalAccessException {
+    void initializeFIRST_givenOrders_returnOrderTrackList() throws InvocationTargetException, IllegalAccessException {
         //given
         scheduler.setTask(Task.FIRST);
         when(orders.get(0)).thenReturn(Order.builder()
@@ -118,6 +118,45 @@ class SchedulerTest {
         assertEquals(2, initial.length);
         for(int i = 0; i< initial.length; i++){
             assertEquals(BigDecimal.ONE,initial[i].getAnswer());
+            assertEquals(store.getPickingStartTime().plus(orders.get(i).getPickingTime()),initial[i].getPickers().peek().getAvailableAt());
+        }
+    }
+
+
+    @Test
+    void initializeSECOND_givenOrders_returnOrderTrackList() throws InvocationTargetException, IllegalAccessException {
+        //given
+        scheduler.setTask(Task.SECOND);
+        when(orders.get(0)).thenReturn(Order.builder()
+                .orderId("order-1")
+                .orderValue(BigDecimal.valueOf(40))
+                .pickingTime(Duration.ofMinutes(60))
+                .completeBy(LocalTime.of(10, 0))
+                .build());
+
+        when(orders.get(1)).thenReturn(Order.builder()
+                .orderId("order-2")
+                .orderValue(BigDecimal.valueOf(5))
+                .pickingTime(Duration.ofMinutes(15))
+                .completeBy(LocalTime.of(9, 15))
+                .build());
+
+        when(orders.get(2)).thenReturn(Order.builder()
+                .orderId("order-3")
+                .orderValue(BigDecimal.valueOf(5))
+                .pickingTime(Duration.ofMinutes(15))
+                .completeBy(LocalTime.of(9, 30))
+                .build());
+
+        when(orders.size()).thenReturn(3);
+        when(store.getPickers()).thenReturn(List.of("P1"));
+        when(store.getPickingStartTime()).thenReturn(LocalTime.of(9,0));
+        //when
+        OrderTrack[] initial = (OrderTrack[]) initialize.invoke(scheduler);
+        //then
+        assertEquals(3, initial.length);
+        for(int i = 0; i< initial.length; i++){
+            assertEquals(orders.get(i).getOrderValue(),initial[i].getAnswer());
             assertEquals(store.getPickingStartTime().plus(orders.get(i).getPickingTime()),initial[i].getPickers().peek().getAvailableAt());
         }
 

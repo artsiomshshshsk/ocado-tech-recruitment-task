@@ -70,7 +70,7 @@ advanced-allocation
 
 optimize-order-value
 ```bash
-  java -jar target/ocado-tech-1.0-SNAPSHOT.jar src/main/resources/self-test-data/advanced-allocation/store.json src/main/resources/self-test-data/advanced-allocation/orders.json SECOND
+  java -jar target/ocado-tech-1.0-SNAPSHOT.jar src/main/resources/self-test-data/optimize-order-value/store.json src/main/resources/self-test-data/optimize-order-value/orders.json SECOND
 ```
 
 advanced-optimize-order-value
