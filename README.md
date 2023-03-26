@@ -40,3 +40,6 @@ advanced-allocation
 ```bash
   java -jar target/ocado-tech-1.0-SNAPSHOT.jar src/main/resources/self-test-data/advanced-allocation/store.json src/main/resources/self-test-data/advanced-allocation/orders.json
 ```
+
+
+# Thank you for you time and consideration!
