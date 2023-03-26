@@ -10,6 +10,9 @@ import java.util.PriorityQueue;
 public class Util {
 
     public static PriorityQueue<Picker> deepCopy(PriorityQueue<Picker> original) {
+        if(original == null){
+            throw new IllegalArgumentException("Original queue cannot be null");
+        }
         PriorityQueue<Picker> copy = new PriorityQueue<>(Comparator.comparing(Picker::getAvailableAt));
         for (Picker item : original) copy.add(new Picker(item.getPickerId(), item.getAvailableAt()));
         return copy;
