@@ -28,9 +28,9 @@ public class Scheduler {
 
     public List<Order> computeSchedule() {
         if(task == Task.FIRST){
-            orders.sort(Comparator.comparing(Order::differenceBetweenCompleteAndPickingTime));
+            orders.sort(Comparator.comparing(Order::completeTimeMinusPickingTime));
         }else{
-            orders.sort(Comparator.comparing(Order::differenceBetweenCompleteAndPickingTime)
+            orders.sort(Comparator.comparing(Order::completeTimeMinusPickingTime)
                     .thenComparing(Order::getOrderValue));
         }
         OrderTrack[] dp = initialize();

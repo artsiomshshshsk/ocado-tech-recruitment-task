@@ -33,7 +33,7 @@ public class Order{
         this.pickupTime = order.pickupTime;
     }
 
-    public LocalTime differenceBetweenCompleteAndPickingTime(){
+    public LocalTime completeTimeMinusPickingTime(){
         return completeBy.minus(pickingTime);
     }
 

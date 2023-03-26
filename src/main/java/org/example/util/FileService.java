@@ -13,6 +13,10 @@ public class FileService {
 
     private final ObjectMapper objectMapper;
 
+    public FileService() {
+        this(new ObjectMapper().registerModule(new JavaTimeModule()));
+    }
+
     public FileService(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
@@ -44,10 +48,5 @@ public class FileService {
             throw new IllegalArgumentException("File " + fileName + " does not exist");
         }
         return file;
-    }
-
-
-    public FileService() {
-        this(new ObjectMapper().registerModule(new JavaTimeModule()));
     }
 }
