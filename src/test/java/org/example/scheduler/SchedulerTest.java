@@ -159,6 +159,31 @@ class SchedulerTest {
             assertEquals(orders.get(i).getOrderValue(),initial[i].getAnswer());
             assertEquals(store.getPickingStartTime().plus(orders.get(i).getPickingTime()),initial[i].getPickers().peek().getAvailableAt());
         }
+    }
 
+
+    @Test
+    void initializeSECOND_oneOrderIsNotFeasible_returnOrderTrackListWithZeroAnswerForNotFeasibleOrder() throws InvocationTargetException, IllegalAccessException {
+        //given
+        scheduler.setTask(Task.SECOND);
+        when(orders.get(0)).thenReturn(Order.builder()
+                .orderId("order-1")
+                .orderValue(BigDecimal.valueOf(40))
+                .pickingTime(Duration.ofMinutes(70))
+                .completeBy(LocalTime.of(10, 0))
+                .build());
+
+        when(orders.size()).thenReturn(1);
+        when(store.getPickers()).thenReturn(List.of("P1"));
+        when(store.getPickingStartTime()).thenReturn(LocalTime.of(9,0));
+        when(store.getPickingEndTime()).thenReturn(LocalTime.of(10,0));
+
+        //when
+        OrderTrack[] initial = (OrderTrack[]) initialize.invoke(scheduler);
+        //then
+        assertEquals(1, initial.length);
+        for(int i = 0; i< initial.length; i++){
+            assertEquals(BigDecimal.ZERO,initial[i].getAnswer());
+        }
     }
 }

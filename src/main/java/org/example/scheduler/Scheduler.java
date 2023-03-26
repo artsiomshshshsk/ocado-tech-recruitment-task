@@ -119,11 +119,16 @@ public class Scheduler {
                 Order order = orders.get(i);
                 picker.giveOrderWithPickingTime(order.getPickingTime());
                 queue.offer(picker);
-                if (task == Task.FIRST) {
-                    dp[i] = new OrderTrack(BigDecimal.ONE, queue, order);
-                } else {
-                    dp[i] = new OrderTrack(order.getOrderValue(), queue, order);
+                if(isFeasible(picker.getAvailableAt(), order)){
+                    if (task == Task.FIRST) {
+                        dp[i] = new OrderTrack(BigDecimal.ONE, queue, order);
+                    } else {
+                        dp[i] = new OrderTrack(order.getOrderValue(), queue, order);
+                    }
+                }else{
+                    dp[i] = new OrderTrack(BigDecimal.ZERO, queue, order);
                 }
+
                 order.setPickupTime(store.getPickingStartTime());
                 order.setAssignedPicker(picker.getPickerId());
             } else {
