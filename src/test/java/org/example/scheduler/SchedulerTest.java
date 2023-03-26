@@ -37,6 +37,8 @@ class SchedulerTest {
 
     private Method initialize;
 
+    private Method computeResults;
+
     @BeforeEach
     void setUp() throws NoSuchMethodException {
         isFeasible = Scheduler.class.getDeclaredMethod("isFeasible", LocalTime.class, Order.class);
@@ -45,6 +47,8 @@ class SchedulerTest {
         initializePickersQueue.setAccessible(true);
         initialize = Scheduler.class.getDeclaredMethod("initialize");
         initialize.setAccessible(true);
+        computeResults = Scheduler.class.getDeclaredMethod("computeResults", OrderTrack[].class);
+        computeResults.setAccessible(true);
     }
 
     @Test
@@ -210,5 +214,34 @@ class SchedulerTest {
         for(int i = 0; i< initial.length; i++){
             assertEquals(BigDecimal.ZERO,initial[i].getAnswer());
         }
+    }
+
+
+    @Test
+    void computeResults_givenOrderTrackList_returnOrderList() throws InvocationTargetException, IllegalAccessException {
+        //given
+        List<Order> orderList = List.of(
+                Order.builder()
+                        .orderId("order-1")
+                        .build(),
+                Order.builder()
+                        .orderId("order-2")
+                        .build()
+        );
+        OrderTrack[] orderTracks = new OrderTrack[2];
+        orderTracks[0] = OrderTrack.builder()
+                .answer(BigDecimal.ONE)
+                .order(orderList.get(0))
+                .build();
+        orderTracks[1] = OrderTrack.builder()
+                .answer(BigDecimal.ONE.add(BigDecimal.ONE))
+                .order(orderList.get(1))
+                .prev(orderTracks[0])
+                .build();
+
+        List<Order> answer = (List<Order>) computeResults.invoke(scheduler, new Object[] { orderTracks });
+        assertEquals(2, answer.size());
+        assertEquals(orderList.get(0), answer.get(0));
+        assertEquals(orderList.get(1), answer.get(1));
     }
 }

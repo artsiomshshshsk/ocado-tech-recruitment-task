@@ -1,12 +1,14 @@
 package org.example.data;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.PriorityQueue;
 
 @AllArgsConstructor
+@Builder
 @Data
 public class OrderTrack {
 

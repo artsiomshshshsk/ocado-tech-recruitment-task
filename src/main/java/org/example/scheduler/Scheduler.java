@@ -135,6 +135,7 @@ public class Scheduler {
                 dp[i] = new OrderTrack(BigDecimal.ZERO, queue, orders.get(i));
             }
         }
+        return dp;
     }
 
     private PriorityQueue<Picker> initializePickersQueue() {
