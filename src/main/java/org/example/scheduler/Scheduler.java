@@ -1,5 +1,7 @@
 package org.example.scheduler;
 
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.example.util.Util;
 import org.example.data.*;
 
@@ -7,11 +9,13 @@ import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.*;
 
+@NoArgsConstructor
+@Setter
 public class Scheduler {
 
-    private final List<Order> orders;
-    private final Store store;
-    private final Task task;
+    private List<Order> orders;
+    private Store store;
+    private Task task;
 
     public Scheduler(List<Order> orders, Store store, Task task) {
         if (orders == null || store == null || task == null) {
@@ -81,6 +85,9 @@ public class Scheduler {
     }
 
     private boolean isFeasible(LocalTime timeAfterCompleting, Order order) {
+        if (timeAfterCompleting == null || order == null) {
+            throw new IllegalArgumentException("Time and order cannot be null");
+        }
         return !timeAfterCompleting.isAfter(store.getPickingEndTime()) && !timeAfterCompleting.isAfter(order.getCompleteBy());
     }
 
