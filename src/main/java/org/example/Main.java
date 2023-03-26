@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.example.data.Order;
 import org.example.data.Store;
 import org.example.scheduler.Scheduler;
+import org.example.util.FileService;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,26 +47,16 @@ public class Main {
 //        File ordersFile = new File("src/main/resources/self-test-data/advanced-optimize-order-count/orders.json");
 
 
-
-        ObjectMapper objectMapper = new ObjectMapper()
-                .registerModule(new JavaTimeModule());
-        try {
-            Store store = objectMapper.readValue(storeFile, Store.class);
-            List<Order> orders = objectMapper.readValue(ordersFile, new TypeReference<List<Order>>(){});
-            Scheduler scheduler = new Scheduler(orders,store);
-            List<Order> scheduledOrders = scheduler.computeSchedule();
-            for(Order order : scheduledOrders){
-                System.out.println(order);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        FileService fileService = new FileService();
+        Store store = fileService.readStore(storeFile);
+        List<Order> orders = fileService.readOrders(ordersFile);
+        Scheduler scheduler = new Scheduler(orders,store);
+        List<Order> scheduledOrders = scheduler.computeSchedule();
+        for(Order order : scheduledOrders){
+            System.out.println(order);
         }
+
     }
-
-
-
-
 
 
 }
