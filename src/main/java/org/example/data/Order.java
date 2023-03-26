@@ -10,6 +10,8 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 public class Order{
      private String orderId;
      private BigDecimal orderValue;

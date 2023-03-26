@@ -1,8 +1,9 @@
 package org.example.scheduler;
 
-import org.example.Util;
+import org.example.util.Util;
 import org.example.data.*;
 
+import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -10,11 +11,11 @@ public class Scheduler {
 
     private final List<Order> orders;
     private final Store store;
-    private final TASK task;
+    private final Task task;
 
-    public Scheduler(List<Order> orders, Store store, TASK task) {
+    public Scheduler(List<Order> orders, Store store, Task task) {
         if(orders == null || store == null || task == null){
-            throw new IllegalArgumentException("Orders, store and task cannot be null");
+            throw new IllegalArgumentException("Orders, task and store cannot be null");
         }
         this.orders = new ArrayList<>(orders.stream().map(Order::new).toList());
         this.store = store;
@@ -22,11 +23,16 @@ public class Scheduler {
     }
 
     public Scheduler(List<Order> orders, Store store) {
-        this(orders, store, TASK.FIRST);
+        this(orders, store, Task.FIRST);
     }
 
     public List<Order> computeSchedule() {
-        orders.sort(Comparator.comparing(Order::differenceBetweenCompleteAndPickingTime));
+        if(task == Task.FIRST){
+            orders.sort(Comparator.comparing(Order::differenceBetweenCompleteAndPickingTime));
+        }else{
+            orders.sort(Comparator.comparing(Order::differenceBetweenCompleteAndPickingTime)
+                    .thenComparing(Order::getOrderValue));
+        }
         OrderTrack[] dp = initialize();
 
         for(int i = 1; i < orders.size();i++){
@@ -40,20 +46,25 @@ public class Scheduler {
                 LocalTime timeAfterCompleting = pickerCopy.getTimeAfterCompleting(order.getPickingTime());
 
                 if(isFeasible(timeAfterCompleting, order)){
-                    double improvement = prev.getAnswer() + 1;
-                    if(improvement >= current.getAnswer()){
+                    BigDecimal improvement;
+                    if(task == Task.FIRST){
+                        improvement = prev.getAnswer().add(BigDecimal.ONE);
+                    }else{
+                        improvement = prev.getAnswer().add(order.getOrderValue());
+                    }
+                    if(improvement.compareTo(current.getAnswer()) >= 0) {
                         updateCurrentOrderTrack(current, prev, improvement);
                         assignOrderToPicker(order, pickerCopy, timeAfterCompleting);
                         updatePickersQueue(current, prev, pickerCopy);
                     }
                 }
-                dp[j].getPickers().offer(picker);
+                prev.getPickers().offer(picker);
             }
         }
         return computeResults(dp);
     }
 
-    private void updateCurrentOrderTrack(OrderTrack current, OrderTrack prev, double improvement) {
+    private void updateCurrentOrderTrack(OrderTrack current, OrderTrack prev, BigDecimal improvement) {
         current.setPrev(prev);
         current.setAnswer(improvement);
     }
@@ -77,7 +88,7 @@ public class Scheduler {
 
 
     private List<Order> computeResults(OrderTrack[] dp) {
-        Optional<OrderTrack> maxPair = Arrays.stream(dp).max(Comparator.comparingDouble(OrderTrack::getAnswer));
+        Optional<OrderTrack> maxPair = Arrays.stream(dp).max(Comparator.comparing(OrderTrack::getAnswer));
         return maxPair.map(pair -> {
             List<Order> result = new LinkedList<>();
             OrderTrack cur = pair;
@@ -98,11 +109,15 @@ public class Scheduler {
                 Order order = orders.get(i);
                 picker.giveOrderWithPickingTime(order.getPickingTime());
                 queue.offer(picker);
-                dp[i] = new OrderTrack(1, queue,order);
+                if(task == Task.FIRST){
+                    dp[i] = new OrderTrack(BigDecimal.ONE, queue,order);
+                }else{
+                    dp[i] = new OrderTrack(order.getOrderValue(), queue, order);
+                }
                 order.setPickupTime(store.getPickingStartTime());
                 order.setAssignedPicker(picker.getPickerId());
             }else{
-                dp[i] = new OrderTrack(0, queue, orders.get(i));
+                dp[i] = new OrderTrack(BigDecimal.ZERO, queue, orders.get(i));
             }
         }
         return dp;

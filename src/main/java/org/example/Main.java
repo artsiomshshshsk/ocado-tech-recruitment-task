@@ -1,62 +1,30 @@
 package org.example;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.example.data.Order;
 import org.example.data.Store;
+import org.example.data.Task;
 import org.example.scheduler.Scheduler;
 import org.example.util.FileService;
+import org.example.util.Util;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-
-//        String storeJson = args[0];
-//        String ordersJson = args[1];
-
-//        File storeFile = new File(storeJson);
-//        File ordersFile = new File(ordersJson);
-
-        File storeFile = new File("src/main/resources/self-test-data/advanced-allocation/store.json");
-        File ordersFile = new File("src/main/resources/self-test-data/advanced-allocation/orders.json");
-
-//        File ordersFile = new File("src/main/resources/self-test-data/any-order-length-is-ok/orders.json");
-//        File storeFile = new File("src/main/resources/self-test-data/any-order-length-is-ok/store.json");
-//
-//        File ordersFile = new File("src/main/resources/self-test-data/complete-by/orders.json");
-//        File storeFile = new File("src/main/resources/self-test-data/complete-by/store.json");
-
-//        File ordersFile = new File("src/main/resources/self-test-data/isf-end-time/orders.json");
-//        File storeFile = new File("src/main/resources/self-test-data/isf-end-time/store.json");
-//
-//        File ordersFile = new File("src/main/resources/self-test-data/optimize-order-count/orders.json");
-//        File storeFile = new File("src/main/resources/self-test-data/optimize-order-count/store.json");
-
-
-//        File ordersFile = new File("src/main/resources/self-test-data/logic-bomb/orders.json");
-//        File storeFile = new File("src/main/resources/self-test-data/logic-bomb/store.json");
-
-//        File storeFile = new File("src/main/resources/self-test-data/my-test-data/store.json");
-//        File ordersFile = new File("src/main/resources/self-test-data/my-test-data/orders.json");
-
-//        File storeFile = new File("src/main/resources/self-test-data/advanced-optimize-order-count/store.json");
-//        File ordersFile = new File("src/main/resources/self-test-data/advanced-optimize-order-count/orders.json");
-
-
         FileService fileService = new FileService();
-        Store store = fileService.readStore(storeFile);
-        List<Order> orders = fileService.readOrders(ordersFile);
-        Scheduler scheduler = new Scheduler(orders,store);
+
+        Task task = args.length > 2 &&
+                    args[2] != null &&
+                    args[2].equals("SECOND") ?
+                    Task.SECOND : Task.FIRST;
+
+        Store store = fileService.readStore(args[0]);
+        List<Order> orders = fileService.readOrders(args[1]);
+
+        Scheduler scheduler = new Scheduler(orders,store, task);
         List<Order> scheduledOrders = scheduler.computeSchedule();
-        for(Order order : scheduledOrders){
-            System.out.println(order);
-        }
 
+        Util.printAnswer(scheduledOrders);
     }
-
-
 }

@@ -1,6 +1,6 @@
 package org.example.data;
 
-public enum TASK {
+public enum Task {
     FIRST,
     SECOND
 }
