@@ -34,7 +34,8 @@ public class Scheduler {
         if (task == Task.FIRST) {
             orders.sort(Comparator.comparing(Order::completeTimeMinusPickingTime));
         } else {
-            orders.sort(Comparator.comparing(Order::completeTimeMinusPickingTime).thenComparing(Order::getOrderValue));
+            Comparator<Order> comparator = Comparator.comparing(Order::getOrderValue).reversed();
+            orders.sort(Comparator.comparing(Order::completeTimeMinusPickingTime).thenComparing(comparator));
         }
         OrderTrack[] dp = initialize();
 
