@@ -116,6 +116,7 @@ class SchedulerTest {
 
         when(store.getPickers()).thenReturn(List.of("P1"));
         when(store.getPickingStartTime()).thenReturn(LocalTime.of(9,0));
+        when(store.getPickingEndTime()).thenReturn(LocalTime.of(10,0));
         //when
         OrderTrack[] initial = (OrderTrack[]) initialize.invoke(scheduler);
         //then
@@ -180,6 +181,7 @@ class SchedulerTest {
         when(orders.size()).thenReturn(3);
         when(store.getPickers()).thenReturn(List.of("P1"));
         when(store.getPickingStartTime()).thenReturn(LocalTime.of(9,0));
+        when(store.getPickingEndTime()).thenReturn(LocalTime.of(10,0));
         //when
         OrderTrack[] initial = (OrderTrack[]) initialize.invoke(scheduler);
         //then
