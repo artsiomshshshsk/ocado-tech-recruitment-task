@@ -10,7 +10,7 @@ import java.util.PriorityQueue;
 public class Util {
 
     public static PriorityQueue<Picker> deepCopy(PriorityQueue<Picker> original) {
-        if(original == null){
+        if (original == null) {
             throw new IllegalArgumentException("Original queue cannot be null");
         }
         PriorityQueue<Picker> copy = new PriorityQueue<>(Comparator.comparing(Picker::getAvailableAt));
@@ -18,8 +18,8 @@ public class Util {
         return copy;
     }
 
-    public static void printAnswer(List<Order> orderList){
-        for(Order order : orderList){
+    public static void printAnswer(List<Order> orderList) {
+        for (Order order : orderList) {
             System.out.println(order);
         }
     }

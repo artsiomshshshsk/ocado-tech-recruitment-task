@@ -15,14 +15,14 @@ public class Main {
         FileService fileService = new FileService();
 
         Task task = args.length > 2 &&
-                    args[2] != null &&
-                    args[2].equals("SECOND") ?
-                    Task.SECOND : Task.FIRST;
+                args[2] != null &&
+                args[2].equals("SECOND") ?
+                Task.SECOND : Task.FIRST;
 
         Store store = fileService.readStore(args[0]);
         List<Order> orders = fileService.readOrders(args[1]);
 
-        Scheduler scheduler = new Scheduler(orders,store, task);
+        Scheduler scheduler = new Scheduler(orders, store, task);
         List<Order> scheduledOrders = scheduler.computeSchedule();
 
         Util.printAnswer(scheduledOrders);

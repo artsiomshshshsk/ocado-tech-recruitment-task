@@ -12,17 +12,17 @@ import java.time.LocalTime;
 @Setter
 @Builder
 @AllArgsConstructor
-public class Order{
-     private String orderId;
-     private BigDecimal orderValue;
-     private Duration pickingTime;
-     private LocalTime completeBy;
-     private String assignedPicker;
-     private LocalTime pickupTime;
+public class Order {
+    private String orderId;
+    private BigDecimal orderValue;
+    private Duration pickingTime;
+    private LocalTime completeBy;
+    private String assignedPicker;
+    private LocalTime pickupTime;
 
 
     public Order(Order order) {
-        if(order == null){
+        if (order == null) {
             throw new IllegalArgumentException("Order cannot be null");
         }
         this.orderId = order.orderId;
@@ -33,7 +33,7 @@ public class Order{
         this.pickupTime = order.pickupTime;
     }
 
-    public LocalTime completeTimeMinusPickingTime(){
+    public LocalTime completeTimeMinusPickingTime() {
         return completeBy.minus(pickingTime);
     }
 

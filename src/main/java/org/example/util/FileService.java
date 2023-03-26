@@ -39,12 +39,12 @@ public class FileService {
         }
     }
 
-    public File readFile(String fileName){
-        if(fileName == null){
+    public File readFile(String fileName) {
+        if (fileName == null) {
             throw new IllegalArgumentException("Filename cannot be null");
         }
         File file = new File(fileName);
-        if(!file.exists()){
+        if (!file.exists()) {
             throw new IllegalArgumentException("File " + fileName + " does not exist");
         }
         return file;
