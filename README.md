@@ -42,4 +42,3 @@ advanced-allocation
 ```
 
 
-# Thank you for you time and consideration!
